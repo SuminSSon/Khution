@@ -14,14 +14,11 @@
     @Data
     @NoArgsConstructor
     @ToString(callSuper = true)
-    @IdClass(PageId.class)
     public class Page {
         @Id
-        //@GeneratedValue(strategy = GenerationType.AUTO)
         @Column(name = "page_id", nullable = false)
         private String page_id; // 페이지 ID
 
-        @Id
         @ManyToOne
         @JoinColumn(name = "user_id", referencedColumnName = "user_id")
         private User user_id; // 유저 ID FK, PK

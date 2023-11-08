@@ -13,7 +13,6 @@ import java.util.Objects;
 @ToString(callSuper = true)
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", nullable = false)
     private String user_id; // ID
 
