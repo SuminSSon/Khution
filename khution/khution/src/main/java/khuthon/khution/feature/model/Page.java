@@ -15,7 +15,6 @@
     @ToString(callSuper = true)
     public class Page {
         @Id
-        //@GeneratedValue(strategy = GenerationType.AUTO)
         @Column(name = "page_id", nullable = false)
         private String page_id; // 페이지 ID
 
