@@ -1,4 +1,4 @@
-package khuthon.khution.feature.model;
+package khuthon.khution.feature.dto;
 
 import lombok.Getter;
 

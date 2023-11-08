@@ -1,5 +1,6 @@
-package khuthon.khution.feature.model;
+package khuthon.khution.feature.dto;
 
+import khuthon.khution.feature.model.Choice;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

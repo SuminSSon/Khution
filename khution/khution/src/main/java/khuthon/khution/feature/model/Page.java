@@ -1,9 +1,7 @@
     package khuthon.khution.feature.model;
 
     import jakarta.persistence.*;
-    import lombok.Data;
-    import lombok.NoArgsConstructor;
-    import lombok.ToString;
+    import lombok.*;
     import org.hibernate.Hibernate;
 
     import java.util.Objects;
@@ -11,22 +9,26 @@
     @Entity
     @Table(name="page")
     @Data
+    @Builder
     @NoArgsConstructor
     @ToString(callSuper = true)
+    @AllArgsConstructor
     public class Page {
+
         @Id
-        @Column(name = "page_id", nullable = false)
-        private String page_id; // 페이지 ID
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        @Column(name = "page_id", nullable = true)
+        private Integer page_id; // 페이지 ID
 
         @ManyToOne
         @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-        private User user_id; // 유저 ID FK, PK
+        private User user_id; // 유저 ID (FK)
 
         @Column(name = "page_title", nullable = false)
         private String page_title; // 페이지 제목
 
-        @Column(name = "page_date", nullable = false)
-        private String page_date; // 페이지 생성 날짜
+        @Column(name = "page_content", nullable = false)
+        private String page_content; // 페이지 내용
 
         @Column(name = "page_depth", nullable = false)
         private String page_depth; // 페이지 폴더 깊이
@@ -45,14 +47,5 @@
         @Override
         public int hashCode() {
             return getClass().hashCode();
-        }
-
-        public Page(String page_id, User user_id, String page_title, String page_date, String page_depth, String page_parent) {
-            this.page_id = page_id;
-            this.user_id = user_id;
-            this.page_title = page_title;
-            this.page_date = page_date;
-            this.page_depth = page_depth;
-            this.page_parent = page_parent;
         }
     }

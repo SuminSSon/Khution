@@ -7,10 +7,12 @@ import org.hibernate.Hibernate;
 import java.util.Objects;
 
 @Entity
-@Table(name="user" )
+@Table(name="user")
 @Data
+@Builder
 @NoArgsConstructor
 @ToString(callSuper = true)
+@AllArgsConstructor
 public class User {
     @Id
     @Column(name = "user_id", nullable = false)
@@ -36,12 +38,5 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public User(String user_id, String user_password, String user_name, String user_last_page) {
-        this.user_id = user_id;
-        this.user_password = user_password;
-        this.user_name = user_name;
-        this.user_last_page = user_last_page;
     }
 }

@@ -1,8 +1,8 @@
 package khuthon.khution.feature.service.Quiz;
 
-import khuthon.khution.feature.model.ChatGptResponseDto;
+import khuthon.khution.feature.dto.ChatGptResponseDto;
 import khuthon.khution.feature.model.Message;
-import khuthon.khution.feature.model.QuestionRequestDto;
+import khuthon.khution.feature.dto.QuestionRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

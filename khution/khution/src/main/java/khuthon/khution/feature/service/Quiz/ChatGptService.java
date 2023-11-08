@@ -1,7 +1,7 @@
 package khuthon.khution.feature.service.Quiz;
 
-import khuthon.khution.feature.model.ChatGptResponseDto;
-import khuthon.khution.feature.model.QuestionRequestDto;
+import khuthon.khution.feature.dto.ChatGptResponseDto;
+import khuthon.khution.feature.dto.QuestionRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
