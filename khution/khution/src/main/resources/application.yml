@@ -1,2 +1,17 @@
 chatGpt:
-  key: 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
+  key: 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
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: jja980930
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      dialect: org.hibernate.dialect.MySQL8InnoDBDialect
