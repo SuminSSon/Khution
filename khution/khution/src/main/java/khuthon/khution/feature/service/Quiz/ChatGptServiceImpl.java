@@ -1,4 +1,4 @@
-package khuthon.khution.feature.service.ChatGpt;
+package khuthon.khution.feature.service.Quiz;
 
 import khuthon.khution.feature.model.ChatGptResponseDto;
 import khuthon.khution.feature.model.Message;

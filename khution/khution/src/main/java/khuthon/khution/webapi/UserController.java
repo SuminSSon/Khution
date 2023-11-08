@@ -22,9 +22,9 @@ public class UserController {
 
     @GetMapping("info")
     public User userInfo(Model model, @RequestParam String id){
-        User user = userService.userInfo(id);
+        User user = userService.userProfile(id);
 
-        model.addAttribute("userInfo", user);
+        model.addAttribute("userProfile", user);
         return user;
     }
 }

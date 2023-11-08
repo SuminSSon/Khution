@@ -10,10 +10,14 @@ public interface UserService {
     // 1. 회원가입
     public boolean join(User user);
 
-    // 2. 유저 정보
-    public User userInfo(String id);
+    // login 기능
+    public String login(User user);
 
-    // 3. 관리자 권한 모든 유저 정보
+    // 2. 유저 정보
+    public User userProfile(String id);
+
+    // 관리자 권한 모든 유저 정보
     public List<User> allUserInfo();
+
 
 }

@@ -1,7 +1,7 @@
 package khuthon.khution.webapi;
 
 import khuthon.khution.feature.model.QuestionRequestDto;
-import khuthon.khution.feature.service.ChatGpt.ChatGptService;
+import khuthon.khution.feature.service.Quiz.ChatGptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

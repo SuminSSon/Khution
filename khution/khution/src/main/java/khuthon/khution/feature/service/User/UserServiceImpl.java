@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User userInfo(String id){
+    public User userProfile(String id){
         return userRepository.findByUser_id(id);
     }
 
