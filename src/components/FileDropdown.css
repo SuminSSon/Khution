@@ -1,0 +1,23 @@
+/* FileDropdown.css */
+.file-create-li {
+    position: absolute;
+    top: 20px;
+    font-size: x-small;
+    list-style-type: none;
+    cursor: pointer;
+    padding: 7px;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 7px;
+    transition: background-color 0.3s;
+  }
+  
+  .file-create-li:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  /* FileDropdown.css */
+  .file-create-li:focus {
+    background-color: rgba(114, 114, 114, 0.3);
+    outline: none;
+  }
+
