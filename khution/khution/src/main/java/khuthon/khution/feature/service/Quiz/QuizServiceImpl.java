@@ -184,11 +184,37 @@
             return quiz;
         }
 
-
         @Override
-        public String getAnswer(Integer quiz_id) {
+        public String getAnswer(Integer quiz_id, String user_answer) {
             Quiz quiz = quizRepository.findByQuizId(quiz_id);
-            return quiz.getQuizAnswer();
+            String gptQuery = "question: " + quiz.getQuizQuestion() + "\nanswer: " + user_answer + "\n문제에 대한 답이 맞는 지 답하시오.\n" +
+                    "desired format:\n" +
+                    "<if correct>맞습니다.\n" +
+                    "<if incorrect>틀렸습니다.";
+            if (quiz.getQuizAnswer() == null) {
+                RestTemplate restTemplate = new RestTemplate();
+                URI uri = UriComponentsBuilder
+                        .fromUriString("https://api.openai.com/v1/chat/completions")
+                        .build()
+                        .encode()
+                        .toUri();
+
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.add("Authorization", "Bearer " + key);
+
+                ArrayList<Message> list = new ArrayList<>();
+                list.add(new Message("user", gptQuery));
+
+                Body body = new Body("gpt-3.5-turbo", list);
+
+                RequestEntity<Body> httpEntity = new RequestEntity<>(body, httpHeaders, HttpMethod.POST, uri);
+
+                ResponseEntity<ChatGptResponseDto> responseEntity = restTemplate.postForEntity(httpEntity.getUrl(), httpEntity, ChatGptResponseDto.class);
+
+                return responseEntity.getBody().getChoices().get(0).getMessage().getContent();
+            } else {
+                return quiz.getQuizAnswer();
+            }
         }
 
         @AllArgsConstructor

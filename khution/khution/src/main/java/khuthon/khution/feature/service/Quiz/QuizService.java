@@ -15,7 +15,7 @@ public interface QuizService {
     public List<String> createQuiz(PageDto pageDto);
 
     // 2. Quiz 정답 확인
-    public String getAnswer(Integer quiz_id);
+    public String getAnswer(Integer quiz_id, String user_answer);
 
 
 }

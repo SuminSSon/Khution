@@ -1,12 +1,12 @@
 package khuthon.khution.webapi;
 
 import khuthon.khution.feature.dto.PageDto;
+import khuthon.khution.feature.dto.QuizAnswerDto;
 import khuthon.khution.feature.model.Page;
 import khuthon.khution.feature.repository.PageRepository;
 import khuthon.khution.feature.service.Page.PageService;
 import khuthon.khution.feature.service.Quiz.QuizService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +35,11 @@ public class QuizController {
 
     }
 
-    @GetMapping("/answer/{quizId}")
-    public ResponseEntity<String> getQuizAnswer(@PathVariable Integer quizId) {
-        String answer = quizService.getAnswer(quizId);
+    // 2. Quiz 정답 얻기
+    @PostMapping("/answer")
+    public ResponseEntity<String> getQuizAnswer(@RequestBody QuizAnswerDto quizAnswerDto) {
+        System.out.println("DTO : " + quizAnswerDto.getQuiz_id() + quizAnswerDto.getUser_answer());
+        String answer = quizService.getAnswer(quizAnswerDto.getQuiz_id(), quizAnswerDto.getUser_answer());
         if (answer != null) {
             return new ResponseEntity<>(answer, HttpStatus.OK);
         } else {
