@@ -26,8 +26,14 @@ public class ChatGptServiceImpl implements ChatGptService {
     @Value("${chatGpt.key}")
     private String key;
 
+    private String suffix = "위 내용을 바탕으로 객관식 문제 2개, 서술형 문제 2개, OX문제 2개를 만들어주고 답도 알려줘.\n" +
+            "\n" +
+            "Desired Format:\n" +
+            "Q.\n" +
+            "A.";
+
     @Override
-    public ChatGptResponseDto askQuestion(@RequestBody QuestionRequestDto questionRequestDto) {
+    public String askQuestion(@RequestBody QuestionRequestDto questionRequestDto) {
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder
                 .fromUriString("https://api.openai.com/v1/chat/completions")
@@ -39,7 +45,7 @@ public class ChatGptServiceImpl implements ChatGptService {
         httpHeaders.add("Authorization", "Bearer " + key);
 
         ArrayList<Message> list = new ArrayList<>();
-        list.add(new Message("user", questionRequestDto.getMessage()));
+        list.add(new Message("user", questionRequestDto.getMessage() + this.suffix));
 
         Body body = new Body("gpt-3.5-turbo", list);
 
@@ -47,7 +53,7 @@ public class ChatGptServiceImpl implements ChatGptService {
 
         ResponseEntity<ChatGptResponseDto> responseEntity = restTemplate.postForEntity(httpEntity.getUrl(), httpEntity, ChatGptResponseDto.class);
 
-        return responseEntity.getBody();
+        return responseEntity.getBody().getChoices().get(0).getMessage().getContent();
     }
 
     @AllArgsConstructor

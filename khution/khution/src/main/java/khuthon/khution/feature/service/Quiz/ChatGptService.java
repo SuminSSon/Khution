@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Service
 public interface ChatGptService {
 
-    public ChatGptResponseDto askQuestion(@RequestBody QuestionRequestDto questionRequestDto);
+    public String askQuestion(@RequestBody QuestionRequestDto questionRequestDto);
 }
