@@ -10,7 +10,7 @@ import Quiz from './pages/quiz';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter initialEntries={['/Login']} initialIndex={0}>
       <MyContextProvider>
         <AppContent />
       </MyContextProvider>
@@ -19,13 +19,8 @@ function App() {
 }
 
 function AppContent() {
-  // 이제 useLocation을 여기서 사용할 수 있습니다.
   const location = useLocation();
-
-  // Define an array of routes where you want to hide the Sidebar
-  const routesWithoutSidebar = ['/Login', '/Signup'];
-
-  // Check if the current route is in the array of routes without Sidebar
+  const routesWithoutSidebar = ['/login', '/Login', '/Signup'];
   const isRouteWithoutSidebar = routesWithoutSidebar.includes(location.pathname);
 
   return (
@@ -38,7 +33,6 @@ function AppContent() {
         <Route path=':fileName/*' element={<DynamicPage />} />
         <Route path='/Quiz' element={<Quiz />} />
         <Route path=':fileName/Quiz' element={<Quiz />} />
-        {/* Redirect to home if an unknown route is accessed */}
         <Route path='*' element={<Navigate to="/" />} />
       </Routes>
     </>

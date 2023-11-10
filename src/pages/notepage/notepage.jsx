@@ -6,6 +6,7 @@ import fileimage from '../../assets/Document.png';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import { Link } from 'react-router-dom';
 import Topbar from '../../components/topbar/Topbar';
+import axios from 'axios';
 import { MyContext } from '../../MyContextProvider';
 
 function Notepage() {
@@ -14,6 +15,29 @@ function Notepage() {
   const [title, setTitle] = useState('')
   const [pageTitle, setPageTitle] = useState('');
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
+
+  useEffect(() => {
+    const fetchUserPages = async () => {
+      try {
+        const response = await axios.get('/userPage', {
+          params: {
+            user_id: 'your_user_id', // replace with the actual user ID
+          },
+        });
+
+        // Filter pages where page_parent is 0
+        const parentPages = response.data.filter((page) => page.page_parent === '0');
+
+        // Update the sidebarFiles state with the filtered pages
+        setSidebarFiles(parentPages);
+      } catch (error) {
+        console.error('Error fetching user pages:', error);
+      }
+    };
+
+    // Call the function to fetch user pages
+    fetchUserPages();
+  }, []);
 
 
   const handlePageTitleChange = (e) => {
