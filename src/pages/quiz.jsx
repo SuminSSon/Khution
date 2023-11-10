@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import './Quiz.css';
 
 function Quiz() {
-  const [subject, setSubject] = useState('SUBJECT1 - Quiz1');
+  const {fileName} = useParams();
   const [quizQuestions, setQuizQuestions] = useState([
     { question: 'Q1. Dispatch의 정의를 서술하세요.'},
     { question: 'Q2. Dispatch의 정의를 서술하세요.'},
@@ -55,7 +56,7 @@ function Quiz() {
 
   return (
     <div className="quiz-container">
-      <h1>{subject}</h1>
+      <h1>{fileName}</h1>
       <div className="quiz-questions-container">
         {quizQuestions.map((quiz, index) => (
           <div key={index} className="quiz-question">

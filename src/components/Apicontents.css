@@ -1,0 +1,7 @@
+.api-contents-container {
+    height: 400px; /* 적절한 높이로 조절하세요 */
+    padding: 20px;
+    background-color: #fafafa; /* 배경색을 원하는 색으로 변경하세요 */
+    
+    border-radius: 10px;
+  }

@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './notepage.css';
-// import FileDropdown from '../../components/FileDropdown';
+import TextEditorForm from '../../components/TextEditorForm';
+import Apicontents from '../../components/Apicontents';
+import fileimage from '../../assets/Document.png';
+import { Link } from 'react-router-dom';
 
 function Notepage() {
-  const [subject, setSubject] = useState('SUBJECT1');
+  const [subject, setSubject] = useState('');
   const [memos, setMemos] = useState([]);
   const [newMemo, setNewMemo] = useState('');
   const [files, setFiles] = useState([]);
   const [showFileOption, setShowFileOption] = useState(false);
-  // const [fileCreated, setFileCreated] = useState(false);
   const [fileTitle, setFileTitle] = useState('');
+  const [showEditor, setShowEditor] = useState(false);
+  const [showSaveButton, setShowSaveButton] = useState(false);
+  const [pageTitle, setPageTitle] = useState('');
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -19,6 +24,8 @@ function Notepage() {
         if (dropdownRef.current) {
           dropdownRef.current.focus();
         }
+      } else if (e.key === 'Enter') {
+        e.target.blur(); // Enter 키를 누를 때 입력란 포커스 제거
       }
     };
 
@@ -27,25 +34,15 @@ function Notepage() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [pageTitle]);
 
-  const addMemo = () => {
-    if (newMemo.trim() !== '') {
-      setMemos([...memos, newMemo]);
-      setNewMemo('');
-    }
-  };
-
+  
   const createQuiz = () => {
     // 퀴즈 생성 로직을 추가하세요.
   };
 
-  const handleTextareaChange = (e) => {
-    const inputValue = e.target.value;
-    setNewMemo(inputValue);
-
-    // "/p"를 입력하면 파일 옵션 보이도록 설정
-    setShowFileOption(inputValue.trim().toLowerCase() === '/p');
+  const handlePageTitleChange = (e) => {
+    setPageTitle(e.target.value);
   };
 
   const createFileWithPrompt = () => {
@@ -59,38 +56,56 @@ function Notepage() {
       setFiles([...files, newFile]);
       setFileTitle(title);
       console.log('파일이 생성되었습니다.');
-      // setFileCreated(true); // 파일이 생성되었다는 상태 업데이트
     }
+  };
+
+  const showEditorForm = () => {
+    setShowEditor(true);
+    setShowSaveButton(true);
+  };
+
+  const hideEditorForm = () => {
+    setShowEditor(false);
+    setShowSaveButton(false);
   };
 
   return (
     <div className='notepage-container'>
-      <h1>{subject}</h1>
       <div className="textarea-button-container">
         <div className="textarea-container">
           <div className="textarea-wrapper">
-            <button onClick={createFileWithPrompt} className="create-file-button">  + 페이지 생성하기</button>
+            <input
+            className='title-input'
+              type="text"
+              placeholder="파일 제목을 입력하세요."
+              value={pageTitle}
+              onChange={handlePageTitleChange}
+            />
+
+            <div>
+            <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
+            <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button>
+            </div>
             {files.map((file, index) => (
-              <div key={index}>
-                <span role="img" aria-label="file-icon">📄</span>
-                <span>{file.title}</span>
+              <div key={index} className='file-wrapper'>
+                <img className='fileimage' src={fileimage} alt='File Icon' />
+                <Link to={`/${file.title}`}>
+                  <span className='filename'>
+                    <span className='filename-text'>{file.title}</span>
+                  </span>
+                </Link>
               </div>
             ))}
-            <textarea
-              placeholder='내용을 입력하세요.'
-              className="memo-input"
-              style={{ fontFamily: "Arial" }}
-              value={newMemo}
-              onChange={handleTextareaChange}
-            />
-            {/* {showFileOption && !fileCreated && (
-              <FileDropdown ref={dropdownRef} onCreateFile={createFile}/>
-            )} */}
+            <div className='file-line'> </div>
+            {showEditor && <TextEditorForm />}
+            { !showEditor&& <Apicontents/> }
           </div>
         </div>
         <div className="button-container">
-          <button className='notesave-button' onClick={addMemo}>내용 저장</button>
+          {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>}
+          <Link to={`/Quiz`}>
           <button className='quizgenerate-button' onClick={createQuiz}>퀴즈 생성</button>
+          </Link>     
         </div>
       </div>
     </div>

@@ -1,16 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DynamicPage from './pages/DynamicPage/DynamicPage';
+import Notepage from './pages/notepage/notepage';
 import reportWebVitals from './reportWebVitals';
 import Quiz from './pages/quiz';
-import Notepage from './pages/notepage/notepage';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
-    <Notepage/>
-    {/* <Quiz/> */}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Notepage />} />
+        <Route path=':fileName/*' element={<DynamicPage />} />
+        <Route path='/Quiz' element={<Quiz/>} />
+        <Route path=':fileName/Quiz' element={<Quiz />} />
+      </Routes>
+      
+    </BrowserRouter>
   </React.StrictMode>
 );
 
