@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext} from 'react';
-import './DynamicPage.css';
+import './DynamicPage2.css';
 import TextEditorForm from '../../components/TextEditorForm';
 import Apicontents from '../../components/Apicontents';
 import fileimage from '../../assets/Document.png';
@@ -7,7 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import { MyContext } from '../../MyContextProvider';
 import Topbar from '../../components/topbar/Topbar';
 
-function DynamicPage() {
+function DynamicPage2() {
   const {fileName} = useParams();
   const [files, setFiles] = useState([]);
   const [fileTitle, setFileTitle] = useState('');
@@ -70,7 +70,7 @@ function DynamicPage() {
             {files.map((file, index) => (
               <div key={index} className='file-wrapper'>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
-                <Link to={`/${pageTitle}/${file.title}`}>
+                <Link to={`/${file.title}`}>
                   <span className='filename'>
                     <span className='filename-text'>{file.title}</span>
                   </span>
@@ -95,4 +95,4 @@ function DynamicPage() {
   );
 }
 
-export default DynamicPage;
+export default DynamicPage2;

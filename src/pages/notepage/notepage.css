@@ -120,6 +120,7 @@
 
 .title-input {
   border: none;
+  width: 100%;
   font-size: xx-large;
   font-weight: bold;
   margin-bottom:20px;

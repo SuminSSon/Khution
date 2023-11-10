@@ -4,12 +4,22 @@
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 200px; /* 사이드바의 너비 조절 */
-    background-color: #f0f0f0; /* 배경색 설정 */
-    border-right: 1px solid #ccc; /* 사이드바 우측에 선 추가 (선택사항) */
+    height: 15%;
+    width: 240px; /* 사이드바의 너비 조절 */
+    border-radius: 10px;
+    background-color: #ffffff; /* 배경색 설정 */
+    z-index: 999;
+    border: 1px solid #ccc; /* 사이드바 우측에 선 추가 (선택사항) */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto; /* 내용이 넘칠 경우 스크롤 적용 */
   }
+
+  .sidebar.expanded {
+    height: 100%; /* 확장된 너비 설정 */
+    transition: height 0.3s ease; /* 확장 애니메이션 추가 (선택사항) */
+  }
+
+  
   
   .sidebarWrapper {
     padding-top: 20px;
@@ -18,10 +28,28 @@
   .sideMenu {
     text-align: center;
   }
+
+  .smallsidebar {
+    margin-left: 40px;
+    display: flex;
+    align-items: center;
+    
+  }
+  
+  .toggleButton {
+    margin-top: 0px;
+    margin-left: 80px;
+    background-color: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+  }
   
   .sidebarTitle {
-    margin-bottom: 20px;
+    margin-top: 16px;
+    margin-left: 40px; /* 조절 가능한 여백 */
   }
+  
   
   .sidebarPagelist {
     list-style: none;
@@ -36,4 +64,50 @@
   .sidebarListItem:hover {
     background-color: #ddd; /* 마우스 호버 시 배경색 변경 (선택사항) */
   }
+  
+  .addFileButton {
+    margin-top: 30px;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin-left: -130px;
+    border: none;
+    border-radius: 7px;
+    background-color: #efefef;
+    cursor: pointer;
+  }
+
+  .sidebarTitle {
+    margin-left: -30px;
+  }
+
+  .file-wrapper2 {
+    display: flex;
+    align-items: center;
+    margin-left: 35px;
+  }
+  
+  .fileimage2 {
+    width: 20px; /* Adjust the size of the file icon as needed */
+    height: auto; /* Maintain the aspect ratio */
+    margin-right: 10px; /* Add some spacing between the icon and the file name */
+  }
+  
+  .filename2 {
+    text-decoration: none;
+    color: #333; /* Set the color of the file name */
+    font-size: 14px; /* Adjust the font size as needed */
+    font-weight: bold; /* Make the file name bold for better visibility */
+    transition: color 0.3s ease; /* Add a smooth color transition on hover */
+  
+    /* Additional styles for better visibility */
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .filename-text2 {
+    text-decoration: none;
+  }
+
+ 
   
