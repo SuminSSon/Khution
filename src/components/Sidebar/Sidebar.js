@@ -22,6 +22,44 @@ const Sidebar = () => {
     }
   };
 
+  // 이 코드 수정해서 연동시 사용
+  // const createFileWithPrompt = async () => {
+  //   const title = prompt('페이지 제목을 입력하세요:');
+  //   if (title) {
+  //     try {
+  //       const user_id = 'abc123'; // 실제 사용자 ID로 교체
+  //       const page_parent = '0';
+
+  //       const response = await axios.post('/create', {
+  //         user_id,
+  //         page_title: title,
+  //         page_parent,
+  //       });
+
+  //       // 응답이 OK일 때 아래 로직 실행
+  //       if (response.status === 200) {
+  //         // 페이지 정보를 가지고 새로운 파일 생성
+  //         const newFile = {
+  //           title: response.data.pageTitle,
+  //           memos: [], // 메모 정보가 있으면 추가
+  //           depth: response.data.pageDepth,
+  //           parent: response.data.pageParent,
+  //         };
+
+  //         setSidebarFiles([...sidebarFiles, newFile]);
+  //         setPageTitle(response.data.pageTitle);
+  //         console.log('파일이 생성되었습니다.');
+  //       } else {
+  //         console.error('페이지 생성 실패. 상태:', response.status);
+  //       }
+  //     } catch (error) {
+  //       console.error('페이지 생성 중 오류 발생:', error);
+  //     }
+  //   }
+  // };
+
+
+
   const handleToggleSidebar = () => {
     setExpanded(!expanded);
   };

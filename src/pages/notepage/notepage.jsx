@@ -19,23 +19,27 @@ function Notepage() {
   useEffect(() => {
     const fetchUserPages = async () => {
       try {
+        const user_id = 'abc123'; // 실제 사용자 ID로 교체
         const response = await axios.get('/userPage', {
           params: {
-            user_id: 'your_user_id', // replace with the actual user ID
+            user_id,
           },
         });
 
-        // Filter pages where page_parent is 0
-        const parentPages = response.data.filter((page) => page.page_parent === '0');
+        // 페이지 정보를 가지고 새로운 파일 생성
+        const newFiles = response.data.map(page => ({
+          title: page.pageTitle,
+          depth: page.pageDepth,
+          parent: page.pageParent,
+        }));
 
-        // Update the sidebarFiles state with the filtered pages
-        setSidebarFiles(parentPages);
+        setSidebarFiles(newFiles);
       } catch (error) {
         console.error('Error fetching user pages:', error);
       }
     };
 
-    // Call the function to fetch user pages
+    // fetchUserPages 함수 호출
     fetchUserPages();
   }, []);
 
@@ -57,17 +61,43 @@ function Notepage() {
       console.log('파일이 생성되었습니다.');
     }
   };
+
+  // const createFileWithPrompt = async () => {
+  //   const title = prompt('페이지 제목을 입력하세요:');
+  //   if (title) {
+  //     try {
+  //       const user_id = 'abc123'; // 실제 사용자 ID로 교체
+  //       const page_parent = '0';
+
+  //       const response = await axios.post('/create', {
+  //         user_id,
+  //         page_title: title,
+  //         page_parent,
+  //       });
+
+  //       // 응답이 OK일 때 아래 로직 실행
+  //       if (response.status === 200) {
+  //         // 페이지 정보를 가지고 새로운 파일 생성
+  //         const newFile = {
+  //           title: response.data.pageTitle,
+  //           memos: [], // 메모 정보가 있으면 추가
+  //           depth: response.data.pageDepth,
+  //           parent: response.data.pageParent,
+  //         };
+
+  //         setSidebarFiles([...sidebarFiles, newFile]);
+  //         setPageTitle(response.data.pageTitle);
+  //         console.log('파일이 생성되었습니다.');
+  //       } else {
+  //         console.error('페이지 생성 실패. 상태:', response.status);
+  //       }
+  //     } catch (error) {
+  //       console.error('페이지 생성 중 오류 발생:', error);
+  //     }
+  //   }
+  // };
   
 
-  const showEditorForm = () => {
-    setShowEditor(true);
-    setShowSaveButton(true);
-  };
-
-  const hideEditorForm = () => {
-    setShowEditor(false);
-    setShowSaveButton(false);
-  };
 
   return (
     <div className='notepage-container'>
