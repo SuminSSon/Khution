@@ -33,8 +33,8 @@ public class UserController {
     }
     // 2. 로그인
     @GetMapping("/login")
-    public ResponseEntity<Boolean> login(@RequestBody UserDto userDto) {
-        boolean loggedIn = userService.login(userDto.getUser_id(), userDto.getUser_password());
+    public ResponseEntity<Boolean> login(@RequestParam String user_id, String user_password) {
+        boolean loggedIn = userService.login(user_id, user_password);
         if (loggedIn) {
             return ResponseEntity.ok(true); // 200 OK
         } else {
@@ -42,9 +42,7 @@ public class UserController {
         }
     }
     @GetMapping("/profile")
-    public ResponseEntity<UserDto> userInfo(@RequestBody UserDto userDto) {
-        String user_id = userDto.getUser_id();
-
+    public ResponseEntity<UserDto> userInfo(@RequestParam String user_id) {
         UserDto userProfile = userService.userProfile(user_id);
 
         if (userProfile != null) {

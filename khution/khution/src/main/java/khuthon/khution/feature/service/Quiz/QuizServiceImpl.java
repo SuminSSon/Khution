@@ -65,7 +65,7 @@
 
         // 1. Quiz 생성
         @Override
-        public List<String> createQuiz(PageDto pageDto) {
+        public List<quizInfo> createQuiz(PageDto pageDto) {
 
 
             RestTemplate restTemplate = new RestTemplate();
@@ -116,7 +116,7 @@
                         parsedQuestion++;
                     } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == Integer.toString(choicesNum).charAt(0)) {
                         String splitKey = Integer.toString(choicesNum) + ".";
-                        questions.set(questions.size() - 1, questions.get(questions.size() - 1) + '\n' + createdQuiz[i]);
+                        questions.set(questions.size() - 1, questions.get(questions.size() - 1) + "Choice" + createdQuiz[i]);
                         choicesNum++;
                         if (choicesNum == 6) {
                             choicesNum = 1;
@@ -172,9 +172,12 @@
                 quiz.setQuizQuestion(questions.get(i));
                 quiz.setQuizAnswer(answers.get(i));
                 quizRepository.save(quiz);
+                quizInfo quizInfo = new quizInfo(quiz.getQuizId(), questions.get(i));
+                result.add(quizInfo);
             }
 
-            return questions;
+            return result;
+
         }
 
         private Quiz saveQuiz(QuizDto quizDto) {

@@ -6,6 +6,7 @@ import khuthon.khution.feature.model.Page;
 import khuthon.khution.feature.repository.PageRepository;
 import khuthon.khution.feature.service.Page.PageService;
 import khuthon.khution.feature.service.Quiz.QuizService;
+import khuthon.khution.feature.service.Quiz.quizInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +24,18 @@ public class QuizController {
     private final PageRepository pageRepository;
 
     // 1. Quiz 생성
-    @PostMapping("/create")
-    public Page createQuiz(@RequestBody PageDto page) {
-        System.out.println("title" + page.getPage_title());
+    @GetMapping("/create")
+    public List<quizInfo> createQuiz(@RequestParam Integer page_id) {
+        Page page = pageService.getPageById(page_id);
+        PageDto pageDto = new PageDto(page.getUserId(), page.getPageContents(), page.getPageTitle(), page.getPageDepth(), page.getPageParent());
+        System.out.println("title" + pageDto.getPage_title());
 
-        List<String> questions = quizService.createQuiz(page);
+        List<quizInfo> questions = quizService.createQuiz(pageDto);
 
-        PageDto result = new PageDto(page.getUser_id(), null, page.getPage_title() + " Quiz", page.getPage_depth() + 1, page.getPage_id());
+        PageDto result = new PageDto(pageDto.getUser_id(), null, pageDto.getPage_title() + " Quiz", pageDto.getPage_depth() + 1, pageDto.getPage_id());
+        pageService.createPage(result);
 
-        return pageService.createPage(result);
+        return questions;
 
     }
 
