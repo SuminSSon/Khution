@@ -19,7 +19,7 @@ public class UserDto {
                 .user_id(this.user_id)
                 .user_password(this.user_password)
                 .user_name(this.user_name)
-                .user_last_page(this.user_last_page)
+//              .user_last_page(this.user_last_page)
                 .build();
 
         return user;

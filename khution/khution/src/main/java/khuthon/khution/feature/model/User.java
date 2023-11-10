@@ -24,8 +24,12 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String user_name; // 이름
 
-    @Column(name = "user_last_page", nullable = false)
+    @Column(name = "user_last_page")
     private String user_last_page; // 마지막 접속한 페이지
+
+    public User(String user_id) {
+        this.user_id = user_id;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -6,12 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PageRepository extends JpaRepository<Page, Integer> {
 
     @Query
-    User findByPage_id(Integer Page_id);
-
-    @Query
-    User findByPage_title(String page_title);
+    List<Page> findByUserId(User userId);
 }
