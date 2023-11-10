@@ -3,13 +3,18 @@ import './DynamicPage.css';
 import TextEditorForm from '../../components/TextEditorForm';
 import Apicontents from '../../components/Apicontents';
 import fileimage from '../../assets/Document.png';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { MyContext } from '../../MyContextProvider';
 import Modal from '../../components/Modal/Modal';
 import Topbar from '../../components/topbar/Topbar';
+import axios from 'axios';
 
 function DynamicPage() {
-  const {fileName} = useParams();
+  
+  const {quizlist, setquizlist} = useContext(MyContext);
+  const location = useLocation();
+  const pageId = location.state ? location.state.pageId : null;
+  const {fileName, fileId} = useParams();
   const [files, setFiles] = useState([]);
   const [fileTitle, setFileTitle] = useState('');
   const [showEditor, setShowEditor] = useState(false);
@@ -18,21 +23,47 @@ function DynamicPage() {
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
   const [quizfile, setquizfile] = useState([]);
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
+  const {currentPageId, setCurentPageId} = useContext(MyContext);
+  const {currentPageContent, setCurrentPageContent} = useContext(MyContext);
+  const navigate = useNavigate();
 
 
 
 
-  const createQuiz = () => {
+  const createQuiz = async () => {
+    console.log(currentPageId);
     setQuizModalOpen(true);
+  
     // 퀴즈 생성 로직을 추가하세요.
     const newQuizFile = {
       title: pageTitle + "-QUIZ",
       memos: [],
     };
-
+  
     // setFiles([...files, newQuizFile]);
-    setquizfile([...quizfile, newQuizFile])
-    
+    setquizfile([...quizfile, newQuizFile]);
+  
+    // API에 퀴즈 생성 요청을 보냅니다.
+    await axios.get(`http://localhost:8080/quiz/create`, {
+      params: {
+        "page_id": currentPageId
+      }
+    })
+      .then(response => {
+        const quizList = [];
+        const data = response.data;
+        console.log(data)
+        // localStorage.setItem("quizlist", response.data);
+        console.log('퀴즈가 성공적으로 생성되었습니다.', response.data);
+        setquizlist(response.data)
+        navigate(`/Main/${pageTitle}/Quiz`);
+        
+      })
+      .catch(error => {
+        console.error('퀴즈 생성 오류:', error);
+      });
+  
     console.log('파일이 생성되었습니다.');
   };
 
@@ -41,6 +72,7 @@ function DynamicPage() {
   };
 
   const createFileWithPrompt = () => {
+    console.log("id", currentPageId);
     const title = prompt('파일 제목을 입력하세요:');
     if (title) {
       const newFile = {
@@ -83,7 +115,7 @@ function DynamicPage() {
             {quizfile.map((file, index) => (
               <div key={index} className='file-wrapper'>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
-                <Link to={`/${pageTitle}/Quiz`}>
+                <Link to={`/Main/${pageTitle}/Quiz`}>
                   <span className='filename'>
                     <span className='filename-text'>{file.title}</span>
                   </span>
@@ -93,7 +125,7 @@ function DynamicPage() {
             {files.map((file, index) => (
               <div key={index} className='file-wrapper'>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
-                <Link to={`/${pageTitle}/${file.title}`}>
+                <Link to={`/Main/${pageTitle}/${file.title}`}>
                   <span className='filename'>
                     <span className='filename-text'>{file.title}</span>
                   </span>
@@ -109,7 +141,7 @@ function DynamicPage() {
         </div>
         <div className="button-container">
           {/* {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>} */}
-          {/* <Link to={`/${pageTitle}/Quiz`}> */}
+          {/* <Link to={`/Main/${pageTitle}/Quiz`}> */}
           <button className='quizgenerate-button' onClick={createQuiz}>퀴즈 생성</button>
           {/* </Link>   */}
           <Modal

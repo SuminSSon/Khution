@@ -1,77 +1,81 @@
-import './login.css'
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import Imglogo from './logo.png'
+import { useNavigate } from 'react-router-dom';
+import Imglogo from './logo.png';
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user_id: '',
-      user_password: '',
-    };
-  }
+function Login() {
+  const [user_id, setUser_id] = useState('');
+  const [user_password, setUser_password] = useState('');
+  const navigate = useNavigate();
 
-  handleInputChange = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    if (name === 'user_id') {
+      setUser_id(value);
+    } else if (name === 'user_password') {
+      setUser_password(value);
+    }
   }
 
-  handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // 사용자 정보를 서버로 보내는 POST 요청을 만듭니다.
-    axios.post('http://localhost:3000/user/login', {
-      user_id: this.state.user_id,
-      user_password: this.state.user_password,
-    })
+    try {
+      // 사용자 정보를 서버로 보내는 POST 요청을 만듭니다.
+      const response = await axios.get('http://localhost:8080/user/login', {
+        params: {
+          user_id: user_id,
+          user_password: user_password,
+        }
+      });
 
-    .then(response => {
-      // 성공적으로 서버로 전송된 경우의 처리
+      // 성공 시 navigate를 사용하여 페이지 이동
       console.log('로그인 성공:', response.data);
-    })
-    .catch(error => {
+      localStorage.setItem('user_id', user_id);
+      navigate('/Main');
+    } catch (error) {
       // 오류 처리
-      console.error('회원가입 오류:', error);
-    });
+      console.error('로그인 오류:', error);
+    }
   }
 
-
-  render() {
-    return (
-      <div className={"SignUp"}>
-        <div className={"KhutionLogo"}>
-          <img className={"logoimg"} alt="로고" src={Imglogo}/>
-        </div>
-        < div className={"Logo"}>Khution</div>
-        <div className={"signupinfo"}>
-        <form onSubmit={this.handleSubmit}>
+  return (
+    <div className={"SignUp"}>
+      <div className={"KhutionLogo"}>
+        <img className={"logoimg"} alt="로고" src={Imglogo} />
+      </div>
+      <div className={"Logo"}>Khution</div>
+      <div className={"signupinfo"}>
+        <form onSubmit={handleSubmit}>
           <div className={"userInfo"}>
-            <label htmlFor="user_id">USER ID  :</label>
-            <input className={"textbox"}
+            <label htmlFor="user_id">USER ID:</label>
+            <input
+              className={"textbox"}
               type="text"
               id="user_id"
               name="user_id"
-              value={this.state.user_id}
-              onChange={this.handleInputChange}
+              value={user_id}
+              onChange={handleInputChange}
             />
           </div>
           <div className={"userInfo"}>
             <label htmlFor="user_password">USER PW:</label>
-            <input className={"textbox"}
+            <input
+              className={"textbox"}
               type="password"
               id="user_password"
               name="user_password"
-              value={this.state.user_password}
-              onChange={this.handleInputChange}
+              value={user_password}
+              onChange={handleInputChange}
             />
           </div>
-          <button className={"submitbtn"} type="submitbtn">LOG IN</button>
+          <button className={"submitbtn"} type="submitbtn">
+            LOG IN
+          </button>
         </form>
-        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Login;

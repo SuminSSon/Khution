@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import DynamicPage from './pages/DynamicPage/DynamicPage';
 import Notepage from './pages/notepage/notepage';
@@ -19,20 +19,23 @@ function App() {
 }
 
 function AppContent() {
+  const [pageList, setPageList] = useState([]);
+  const [currentPage, setCurrentPage] = useState('');
+
   const location = useLocation();
-  const routesWithoutSidebar = ['/login', '/Login', '/Signup'];
+  const routesWithoutSidebar = ['/', '/Signup'];
   const isRouteWithoutSidebar = routesWithoutSidebar.includes(location.pathname);
 
   return (
     <>
       {!isRouteWithoutSidebar && <Sidebar />}
       <Routes>
-        <Route path='/Login' element={<Login />} />
+        <Route path='/' element={<Login />} />
         <Route path='/Signup' element={<Signup />} />
-        <Route path="/" element={<Notepage />} />
-        <Route path=':fileName/*' element={<DynamicPage />} />
-        <Route path='/Quiz' element={<Quiz />} />
-        <Route path=':fileName/Quiz' element={<Quiz />} />
+        <Route path="/Main" element={<Notepage  pageList={pageList} setPageList={setPageList}/>} />
+        <Route path='/Main/:fileName/*' element={<DynamicPage currentPage={currentPage} setCurrentPage={setCurrentPage} pageList={pageList}/>} />
+        <Route path='/Quiz' element={<Quiz />} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
+        <Route path='/Main/:fileName/Quiz' element={<Quiz />} />
         <Route path='*' element={<Navigate to="/" />} />
       </Routes>
     </>

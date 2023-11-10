@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw } from "draft-js";
+import { ContentState, EditorState, convertFromHTML, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftjsToHtml from "draftjs-to-html";
+import { MyContext } from "../MyContextProvider";
 
 const Container = styled.div`
   width: 100%;
@@ -23,13 +24,24 @@ const Viewer = styled.div`
 `;
 
 const TextEditorForm = () => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const {currentPageContent, setCurrentPageContent} = useContext(MyContext);
+  const [editorState, setEditorState] = useState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(currentPageContent))));
   const [htmlString, setHtmlString] = useState("");
+
+  useEffect(() => {
+    setEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(currentPageContent))));
+    console.log(editorState);
+  }, [])
+
+  useEffect(() => {
+    
+  }, [editorState])
 
   const updateTextDescription = async (state) => {
     await setEditorState(state);
     const html = draftjsToHtml(convertToRaw(editorState.getCurrentContent()));
     setHtmlString(html);
+    setCurrentPageContent(htmlString);
   };
 
   const uploadCallback = () => {
@@ -48,17 +60,17 @@ const TextEditorForm = () => {
           }}
           localization={{ locale: "ko" }}
           editorStyle={{
-            height: "400px",
+            height: "550px",
             width: "100%",
             border: "3px solid lightgray",
             padding: "20px",
           }}
         />
       </Container>
-      <RowBox>
+      {/* <RowBox>
         <Viewer dangerouslySetInnerHTML={{ __html: htmlString }} />
         <Viewer>{htmlString}</Viewer>
-      </RowBox>
+      </RowBox> */}
     </>
   );
 };

@@ -1,37 +1,46 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './notepage.css';
 import TextEditorForm from '../../components/TextEditorForm';
 import Apicontents from '../../components/Apicontents';
 import fileimage from '../../assets/Document.png';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Topbar from '../../components/topbar/Topbar';
 import axios from 'axios';
 import { MyContext } from '../../MyContextProvider';
 
 function Notepage() {
+  const [currentPage, setCurrentPage] = useState('');
   const [showEditor, setShowEditor] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('');
+  const { currentPageId, setCurrentPageId } = useContext(MyContext);
   const [pageTitle, setPageTitle] = useState('');
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserPages = async () => {
       try {
-        const user_id = 'abc123'; // 실제 사용자 ID로 교체
-        const response = await axios.get('/userPage', {
+        // localStorage에서 user_id 가져오기
+        const user_id = localStorage.getItem('user_id');
+
+        const response = await axios.get('http://localhost:8080/page/userPages', {
           params: {
-            user_id,
-          },
+            userId: user_id,
+          }
         });
 
-        // 페이지 정보를 가지고 새로운 파일 생성
+        console.log(response);
+
         const newFiles = response.data.map(page => ({
+          id: page.pageId,
           title: page.pageTitle,
           depth: page.pageDepth,
           parent: page.pageParent,
         }));
+
+        console.log(newFiles);
 
         setSidebarFiles(newFiles);
       } catch (error) {
@@ -39,65 +48,61 @@ function Notepage() {
       }
     };
 
-    // fetchUserPages 함수 호출
     fetchUserPages();
   }, []);
-
 
   const handlePageTitleChange = (e) => {
     setTitle(e.target.value);
   };
 
-  const createFileWithPrompt = () => {
+  const createFileWithPrompt = async () => {
     const title = prompt('페이지 제목을 입력하세요:');
     if (title) {
-      const newFile = {
-        title,
-        memos: [],
-      };
-  
-      setSidebarFiles([...sidebarFiles, newFile]);
-      setPageTitle(title);
-      console.log('파일이 생성되었습니다.');
+      try {
+        // localStorage에서 user_id 가져오기
+        const user_id = localStorage.getItem('user_id');
+        const page_parent = '0';
+
+        const response = await axios.post('http://localhost:8080/page/create', {
+          page_title: title,
+          user_id,
+          page_contents: '',
+          page_depth: '1',
+          page_parent,
+        });
+
+        if (response.status === 200) {
+          console.log("생성res", response);
+          console.log("생성됨");
+
+          const newFile = {
+            id: response.data.pageId,
+            title: response.data.pageTitle,
+            content: response.data.pageContents,
+            depth: response.data.pageDepth,
+            parent: response.data.pageParent,
+          };
+
+          console.log(newFile);
+
+          setSidebarFiles([...sidebarFiles, newFile]);
+          setPageTitle(response.data.page_title);
+          console.log('파일이 생성되었습니다.');
+        } else {
+          console.error('페이지 생성 실패. 상태:', response.status);
+        }
+      } catch (error) {
+        console.error('페이지 생성 중 오류 발생:', error);
+      }
     }
   };
 
-  // const createFileWithPrompt = async () => {
-  //   const title = prompt('페이지 제목을 입력하세요:');
-  //   if (title) {
-  //     try {
-  //       const user_id = 'abc123'; // 실제 사용자 ID로 교체
-  //       const page_parent = '0';
-
-  //       const response = await axios.post('/create', {
-  //         user_id,
-  //         page_title: title,
-  //         page_parent,
-  //       });
-
-  //       // 응답이 OK일 때 아래 로직 실행
-  //       if (response.status === 200) {
-  //         // 페이지 정보를 가지고 새로운 파일 생성
-  //         const newFile = {
-  //           title: response.data.pageTitle,
-  //           memos: [], // 메모 정보가 있으면 추가
-  //           depth: response.data.pageDepth,
-  //           parent: response.data.pageParent,
-  //         };
-
-  //         setSidebarFiles([...sidebarFiles, newFile]);
-  //         setPageTitle(response.data.pageTitle);
-  //         console.log('파일이 생성되었습니다.');
-  //       } else {
-  //         console.error('페이지 생성 실패. 상태:', response.status);
-  //       }
-  //     } catch (error) {
-  //       console.error('페이지 생성 중 오류 발생:', error);
-  //     }
-  //   }
-  // };
-  
-
+  const handleClickFile = (file) => {
+    console.log(file.id);
+    setCurrentPage(file.id);
+    setCurrentPageId(file.id);
+    navigate(`/Main/${file.title}`, { state: { pageId: file.id } });
+  };
 
   return (
     <div className='notepage-container'>
@@ -114,29 +119,22 @@ function Notepage() {
 
             <div>
               <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
-              {/* <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button> */}
             </div>
 
             {sidebarFiles.map((file, index) => (
-              <div key={index} className='file-wrapper'>
+              <div key={index} className='file-wrapper' onClick={() => handleClickFile(file)}>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
-                <Link to={`/${file.title}`}>
-                  <span className='filename'>
-                    <span className='filename-text'>{file.title}</span>
-                  </span>
-                </Link>
+                <span className='filename'>
+                  <span className='filename-text'>{file.title}</span>
+                </span>
               </div>
             ))}
-            
+
             <div className='file-line'> </div>   
           </div>
         </div>
 
         <div className="button-container">
-          {/* {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>} */}
-          {/* <Link to={`/Quiz`}>
-            <button className='quizgenerate-button' onClick={createQuiz}>퀴즈 생성</button>
-          </Link> */}
         </div>
       </div>
     </div>

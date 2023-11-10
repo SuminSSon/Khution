@@ -1,59 +1,59 @@
 /* Quiz.css */
 .quiz-container {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    margin-top: 50px;
-    margin-left: 400px;
-    margin-bottom: 100px;
-  }
-  
-  .quiz-questions-container {
-    width: 70%;
-    
-  }
-  
-  .quiz-question {
-    position: relative;
-    font-weight:bolder;
-    color: #0074e4;
-    font-size: 19px;
-    margin-bottom: 10px;
-    padding: 10px;
-  }
-  
-  .quiz-input {
-    margin-top: 20px;
-    width: 100%;
-    border: none;
-    border-bottom: 1.5px solid #d4d4d4; /* 밑에 선 스타일 및 색상 설정 */
-    padding: 5px;
-    margin-bottom: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-top: 50px;
+  margin-left: 400px;
+  margin-bottom: 100px;
+}
 
-  .quiz-input::placeholder {
-    color: #a8a8a8; /* placeholder 텍스트 색상 설정 */
-    font-weight: bold;
-  }
+.quiz-questions-container {
+  width: 70%;
   
-  .quiz-button {
-    position: absolute;
-    bottom: -10px;
-    right: 0;
-    background-color: #0074e4; /* 파란색 배경 버튼 */
-    border-radius: 15px;
-    font-weight: bold;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-   
-  }
-  
-  .correct-answer {
-    color: #008000; /* 정답 문구 색깔 (녹색) */
-  }
-  
-  .user-answer {
-    font-size: small;
-  }
+}
+
+.quiz-question {
+  position: relative;
+  font-weight:bolder;
+  color: #0074e4;
+  font-size: 19px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.quiz-input {
+  margin-top: 20px;
+  width: 100%;
+  border: none;
+  border-bottom: 1.5px solid #d4d4d4; /* 밑에 선 스타일 및 색상 설정 */
+  padding: 5px;
+  margin-bottom: 20px;
+}
+
+.quiz-input::placeholder {
+  color: #a8a8a8; /* placeholder 텍스트 색상 설정 */
+  font-weight: bold;
+}
+
+.quiz-button {
+  position: absolute;
+  bottom: -10px;
+  right: 0;
+  background-color: #0074e4; /* 파란색 배경 버튼 */
+  border-radius: 15px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+ 
+}
+
+.correct-answer {
+  color: #008000; /* 정답 문구 색깔 (녹색) */
+}
+
+.user-answer {
+  font-size: small;
+}
