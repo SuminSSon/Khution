@@ -1,0 +1,66 @@
+
+.SignUp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 700px;
+}
+
+.logoimg{
+    margin-top:500px;
+    height :300px;
+}
+
+.userInfo{
+  font-size: 20px;
+  font-weight: bold;
+  padding: 5px;
+  margin-bottom: 20px;
+}
+
+.textbox {
+    border-color:transparent;
+    border-bottom-color: #282c34;
+    background: white;
+    border-radius: 2px;
+    color: rgba(0, 0, 0, 0.8);
+    height: 40px;
+    width: 300px;
+}
+
+.Logo {
+  font-size: 70px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.signupinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submitbtn{
+    box-sizing: content-box;
+    background-color: transparent;
+    border-radius: 1.25rem;
+    border-color:black;
+    text-align: center;
+    width: 120px;
+    height: 40px;
+    font-size:20px;
+    font-weight: bold;
+}
+
+
+ .submitbtn:active {
+    background-color: #3596fc;
+    border-color:#3596fc;
+}

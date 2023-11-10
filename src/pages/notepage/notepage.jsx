@@ -74,11 +74,7 @@ function Notepage() {
               </div>
             ))}
             
-            <div className='file-line'> </div>
-            <Topbar onEditContent={showEditorForm} showSaveButton={showSaveButton} onHideEditor={hideEditorForm} />
-            
-            {showEditor && <TextEditorForm />}
-            {!showEditor && <Apicontents />}
+            <div className='file-line'> </div>   
           </div>
         </div>
 

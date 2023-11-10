@@ -5,6 +5,7 @@ import Apicontents from '../../components/Apicontents';
 import fileimage from '../../assets/Document.png';
 import { Link, useParams } from 'react-router-dom';
 import { MyContext } from '../../MyContextProvider';
+import Modal from '../../components/Modal/Modal';
 import Topbar from '../../components/topbar/Topbar';
 
 function DynamicPage() {
@@ -16,11 +17,13 @@ function DynamicPage() {
   const [pageTitle, setPageTitle] = useState(fileName);
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
   const [quizfile, setquizfile] = useState([]);
+  const [isQuizModalOpen, setQuizModalOpen] = useState(false);
 
 
 
 
   const createQuiz = () => {
+    setQuizModalOpen(true);
     // 퀴즈 생성 로직을 추가하세요.
     const newQuizFile = {
       title: pageTitle + "-QUIZ",
@@ -74,8 +77,8 @@ function DynamicPage() {
             />
 
             <div>
-            <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
-            {/* <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button> */}
+              <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
+              {/* <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button> */}
             </div>
             {quizfile.map((file, index) => (
               <div key={index} className='file-wrapper'>
@@ -98,10 +101,10 @@ function DynamicPage() {
               </div>
             ))}
             <div className='file-line'> </div>
-            <Topbar onEditContent={showEditorForm} showSaveButton={showSaveButton} onHideEditor={hideEditorForm} /> 
+            <Topbar onEditContent={showEditorForm} showSaveButton={showSaveButton} onHideEditor={hideEditorForm} />
 
             {showEditor && <TextEditorForm />}
-            { !showEditor&& <Apicontents/> }
+            {!showEditor && <Apicontents />}
           </div>
         </div>
         <div className="button-container">
@@ -109,6 +112,11 @@ function DynamicPage() {
           {/* <Link to={`/${pageTitle}/Quiz`}> */}
           <button className='quizgenerate-button' onClick={createQuiz}>퀴즈 생성</button>
           {/* </Link>   */}
+          <Modal
+            isOpen={isQuizModalOpen}
+            onClose={() => setQuizModalOpen(false)} //respond가 오면 false가 돼서 모달이 닫히게 해야함
+            content="퀴즈를 생성하고 있습니다..."
+          />
         </div>
       </div>
     </div>
