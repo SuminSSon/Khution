@@ -1,0 +1,39 @@
+/* sidebar.css */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 200px; /* 사이드바의 너비 조절 */
+    background-color: #f0f0f0; /* 배경색 설정 */
+    border-right: 1px solid #ccc; /* 사이드바 우측에 선 추가 (선택사항) */
+    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 적용 */
+  }
+  
+  .sidebarWrapper {
+    padding-top: 20px;
+  }
+  
+  .sideMenu {
+    text-align: center;
+  }
+  
+  .sidebarTitle {
+    margin-bottom: 20px;
+  }
+  
+  .sidebarPagelist {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebarListItem {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .sidebarListItem:hover {
+    background-color: #ddd; /* 마우스 호버 시 배경색 변경 (선택사항) */
+  }
+  

@@ -5,6 +5,10 @@
     margin-right: 50px;
 }
 
+.Note-page{
+  display: flex;
+}
+
 .memo-input {
   margin-top: 20px;
     width: 100%;

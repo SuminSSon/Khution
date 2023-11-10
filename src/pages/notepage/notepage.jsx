@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import './notepage.css';
 import TextEditorForm from '../../components/TextEditorForm';
 import Apicontents from '../../components/Apicontents';
 import fileimage from '../../assets/Document.png';
+import Sidebar from '../../components/Sidebar/Sidebar';
 import { Link } from 'react-router-dom';
+import { MyContext } from '../../MyContextProvider';
 
 function Notepage() {
   const [subject, setSubject] = useState('');
@@ -16,6 +18,7 @@ function Notepage() {
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
   const dropdownRef = useRef(null);
+  const {sidebarFiles, setSidebarFiles} = useContext(MyContext);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -53,9 +56,11 @@ function Notepage() {
         memos: [],
       };
 
-      setFiles([...files, newFile]);
+      setSidebarFiles([...sidebarFiles, newFile]);
       setFileTitle(title);
       console.log('파일이 생성되었습니다.');
+
+      
     }
   };
 
@@ -71,6 +76,9 @@ function Notepage() {
 
   return (
     <div className='notepage-container'>
+      {/* <div className={"sidebar"}>
+          <Sidebar files={sidebarFiles} />
+       </div> */}
       <div className="textarea-button-container">
         <div className="textarea-container">
           <div className="textarea-wrapper">
@@ -86,7 +94,7 @@ function Notepage() {
             <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
             <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button>
             </div>
-            {files.map((file, index) => (
+            {sidebarFiles.map((file, index) => (
               <div key={index} className='file-wrapper'>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
                 <Link to={`/${file.title}`}>

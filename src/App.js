@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import './index.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DynamicPage from './pages/DynamicPage/DynamicPage';
+import Notepage from './pages/notepage/notepage';
+import Sidebar from './components/Sidebar/Sidebar';
+import { MyContextProvider } from './MyContextProvider';
+import Quiz from './pages/quiz';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   
+    <BrowserRouter>
+    <MyContextProvider>
+    <Sidebar/>
+      <Routes>
+        <Route path="/" element={<Notepage />} />
+        <Route path=':fileName/*' element={<DynamicPage />} />
+        <Route path='/Quiz' element={<Quiz/>} />
+        <Route path=':fileName/Quiz' element={<Quiz />} />
+      </Routes>
+    </MyContextProvider>
+    </BrowserRouter>
+  
   );
 }
 

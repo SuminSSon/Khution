@@ -5,23 +5,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DynamicPage from './pages/DynamicPage/DynamicPage';
 import Notepage from './pages/notepage/notepage';
 import reportWebVitals from './reportWebVitals';
+import App from './App';
+import Sidebar from './components/Sidebar/Sidebar';
 import Quiz from './pages/quiz';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Notepage />} />
-        <Route path=':fileName/*' element={<DynamicPage />} />
-        <Route path='/Quiz' element={<Quiz/>} />
-        <Route path=':fileName/Quiz' element={<Quiz />} />
-      </Routes>
-      
-    </BrowserRouter>
-  </React.StrictMode>
+  <App/>
 );
 
 // If you want to start measuring performance in your app, pass a function
