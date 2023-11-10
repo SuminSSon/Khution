@@ -30,11 +30,15 @@
         @Column(name = "page_contents")
         private String pageContents; // 페이지 내용
 
-        @Column(name = "page_depth", nullable = false)
+        @Column(name = "page_depth")
         private Integer pageDepth; // 페이지 폴더 깊이
 
-        @Column(name = "page_parent", nullable = false)
+        @Column(name = "page_parent")
         private Integer pageParent; // 페이지 상위 폴더
+
+        public Integer getPageDepth() {
+            return pageDepth != null ? pageDepth : 1;
+        }
 
         @Override
         public boolean equals(Object o) {

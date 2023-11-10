@@ -27,9 +27,8 @@ public class PageServiceImpl implements PageService{
 
     @Override
     public Page createPage(PageDto pageDto) {
-        User user = userRepository.findByUser_id(pageDto.getUser_id());
+        Page page = pageDto.toEntity();
 
-        Page page = pageDto.toEntity(user);
         return pageRepository.save(page);
     }
 

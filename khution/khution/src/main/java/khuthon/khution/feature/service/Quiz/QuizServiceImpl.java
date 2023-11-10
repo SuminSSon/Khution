@@ -1,192 +1,201 @@
-package khuthon.khution.feature.service.Quiz;
+    package khuthon.khution.feature.service.Quiz;
 
 
-import khuthon.khution.feature.dto.ChatGptResponseDto;
-import khuthon.khution.feature.dto.PageDto;
-import khuthon.khution.feature.model.Message;
-import khuthon.khution.feature.model.Page;
-import khuthon.khution.feature.model.User;
-import khuthon.khution.feature.repository.QuizRepository;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+    import khuthon.khution.feature.dto.ChatGptResponseDto;
+    import khuthon.khution.feature.dto.PageDto;
+    import khuthon.khution.feature.dto.QuizDto;
+    import khuthon.khution.feature.model.Message;
+    import khuthon.khution.feature.model.Page;
+    import khuthon.khution.feature.model.Quiz;
+    import khuthon.khution.feature.repository.QuizRepository;
+    import lombok.AllArgsConstructor;
+    import lombok.Getter;
+    import lombok.RequiredArgsConstructor;
+    import lombok.Setter;
+    import org.springframework.beans.factory.annotation.Value;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpMethod;
+    import org.springframework.http.RequestEntity;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.stereotype.Service;
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+    import java.net.URI;
+    import java.util.ArrayList;
+    import java.util.List;
 
-@Service
-public class QuizServiceImpl implements QuizService {
+    @Service
+    @RequiredArgsConstructor
+    public class QuizServiceImpl implements QuizService {
 
-    @Value("${chatGpt.key}")
-    private String key;
+        private final QuizRepository quizRepository;
 
-    private String suffix = "\n위 내용을 바탕으로 객관식 문제 2개, 단답형 문제 2개, OX문제 2개를 만들어 주고 답도 알려줘.\n" +
-            "\n" +
-            "Desired Format:\n" +
-            "객관식 문제:" +
-            "Q.<question>\n" +
-            "1.<choice>\n" +
-            "2.<choice>\n" +
-            "3.<choice>\n" +
-            "4.<choice>\n" +
-            "5.<choice>\n" +
-            "A.<answer>\n" +
-            "Q.<question>\n" +
-            "1.<choice>\n" +
-            "2.<choice>\n" +
-            "3.<choice>\n" +
-            "4.<choice>\n" +
-            "5.<choice>\n" +
-            "A.<answer>\n" +
-            "단답형 문제:" +
-            "Q.<question>\n" +
-            "A.<answer>\n" +
-            "Q.<question>\n" +
-            "A.<answer>\n" +
-            "OX문제:" +
-            "Q.<question>\n" +
-            "A.<answer>\n" +
-            "Q.<question>\n" +
-            "A.<answer>";
+        @Value("${chatGpt.key}")
+        private String key;
 
-    private final QuizRepository quizRepository;
+        private String suffix = "\n위 내용을 바탕으로 객관식 문제 2개, 단답형 문제 2개, OX문제 2개를 만들어 주고 답도 알려줘.\n" +
+                "\n" +
+                "Desired Format:\n" +
+                "객관식 문제:" +
+                "Q.<question>\n" +
+                "1.<choice>\n" +
+                "2.<choice>\n" +
+                "3.<choice>\n" +
+                "4.<choice>\n" +
+                "5.<choice>\n" +
+                "A.<answer>\n" +
+                "Q.<question>\n" +
+                "1.<choice>\n" +
+                "2.<choice>\n" +
+                "3.<choice>\n" +
+                "4.<choice>\n" +
+                "5.<choice>\n" +
+                "A.<answer>\n" +
+                "단답형 문제:" +
+                "Q.<question>\n" +
+                "A.<answer>\n" +
+                "Q.<question>\n" +
+                "A.<answer>\n" +
+                "OX문제:" +
+                "Q.<question>\n" +
+                "A.<answer>\n" +
+                "Q.<question>\n" +
+                "A.<answer>";
 
-    public QuizServiceImpl(QuizRepository quizRepository) { this.quizRepository = quizRepository; }
+        // 1. Quiz 생성
+        @Override
+        public List<String> createQuiz(PageDto pageDto) {
 
-    // 1. Quiz 생성
-    @Override
-    public Boolean createQuiz(PageDto pageDto) {
-        String quizPageContents;
-        String quizPageTitle = pageDto.getPage_title() + "Quiz";
-        Integer quizPageDepth = pageDto.getPage_depth() + 1;
-        Integer quizPageParent = pageDto.getPage_id();
-        String quizPageUserId = pageDto.getUser_id();
 
-        RestTemplate restTemplate = new RestTemplate();
-        URI uri = UriComponentsBuilder
-                .fromUriString("https://api.openai.com/v1/chat/completions")
-                .build()
-                .encode()
-                .toUri();
+            RestTemplate restTemplate = new RestTemplate();
+            URI uri = UriComponentsBuilder
+                    .fromUriString("https://api.openai.com/v1/chat/completions")
+                    .build()
+                    .encode()
+                    .toUri();
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + key);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("Authorization", "Bearer " + key);
 
-        ArrayList<Message> list = new ArrayList<>();
-        list.add(new Message("user", pageDto.getPage_contents() + this.suffix));
+            ArrayList<Message> list = new ArrayList<>();
+            list.add(new Message("user", pageDto.getPage_contents() + this.suffix));
 
-        Body body = new Body("gpt-3.5-turbo", list);
+            Body body = new Body("gpt-3.5-turbo", list);
 
-        RequestEntity<Body> httpEntity = new RequestEntity<>(body, httpHeaders, HttpMethod.POST, uri);
+            RequestEntity<Body> httpEntity = new RequestEntity<>(body, httpHeaders, HttpMethod.POST, uri);
 
-        ResponseEntity<ChatGptResponseDto> responseEntity = restTemplate.postForEntity(httpEntity.getUrl(), httpEntity, ChatGptResponseDto.class);
+            ResponseEntity<ChatGptResponseDto> responseEntity = restTemplate.postForEntity(httpEntity.getUrl(), httpEntity, ChatGptResponseDto.class);
 
-        String[] createdQuiz = responseEntity.getBody().getChoices().get(0).getMessage().getContent().split("\n");
+            String[] createdQuiz = responseEntity.getBody().getChoices().get(0).getMessage().getContent().split("\n");
 
-        List<String> questions = new ArrayList<>();
-        List<String> answers = new ArrayList<>();
-        Integer choicesNum = 1;
-        Integer parsedQuestion = 0;
+            List<String> questions = new ArrayList<>();
+            List<String> answers = new ArrayList<>();
+            Integer choicesNum = 1;
+            Integer parsedQuestion = 0;
 
-        for (int i = 0; i < createdQuiz.length; i++) {
-            System.out.println(createdQuiz[i]);
-        }
-
-        for (int i = 0; i < createdQuiz.length; i++) {
-            System.out.println(i + " : " + createdQuiz[i]);
-            if (parsedQuestion >= 0 && parsedQuestion < 2){
-                if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'Q') {
-                    if (createdQuiz[i].charAt(0) == '.') {
-                        String splitKey = "Q.";
-                        questions.add(createdQuiz[i].split(splitKey)[1]);
-                    } else {
-                        String splitKey = "Q" + createdQuiz[i].charAt(1) + ".";
-                        questions.add(createdQuiz[i].split(splitKey)[1]);
+            for (int i = 0; i < createdQuiz.length; i++) {
+                if (parsedQuestion >= 0 && parsedQuestion < 2) {
+                    if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'Q') {
+                        if (createdQuiz[i].charAt(0) == '.') {
+                            String splitKey = "Q.";
+                            questions.add(createdQuiz[i].split(splitKey)[1]);
+                        } else {
+                            String splitKey = "Q" + createdQuiz[i].charAt(1) + ".";
+                            questions.add(createdQuiz[i].split(splitKey)[1]);
+                        }
+                    } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'A') {
+                        String splitKey;
+                        if (createdQuiz[i].charAt(1) == '.') {
+                            splitKey = "A.";
+                        } else {
+                            splitKey = "A" + createdQuiz[i].charAt(1) + ".";
+                        }
+                        String splitKey2 = ". ";
+                        answers.add(createdQuiz[i].split(splitKey)[1].split(splitKey2)[0]);
+                        parsedQuestion++;
+                    } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == Integer.toString(choicesNum).charAt(0)) {
+                        String splitKey = Integer.toString(choicesNum) + ".";
+                        questions.set(questions.size() - 1, questions.get(questions.size() - 1) + '\n' + createdQuiz[i]);
+                        choicesNum++;
+                        if (choicesNum == 6) {
+                            choicesNum = 1;
+                        }
                     }
-                } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'A') {
-                    String splitKey;
-                    if (createdQuiz[i].charAt(1) == '.') {
-                        splitKey = "A.";
-                    } else {
-                        splitKey = "A" + createdQuiz[i].charAt(1) + ".";
+                } else if (parsedQuestion >= 2 && parsedQuestion < 4) {
+                    if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'Q') {
+                        if (createdQuiz[i].charAt(0) == '.') {
+                            String splitKey = "Q.";
+                            questions.add(createdQuiz[i].split(splitKey)[1]);
+                        } else {
+                            String splitKey = "Q" + createdQuiz[i].charAt(1) + ".";
+                            questions.add(createdQuiz[i].split(splitKey)[1]);
+                        }
+                    } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'A') {
+                        answers.add(null);
+                        parsedQuestion++;
                     }
-                    String splitKey2 = ". ";
-                    answers.add(createdQuiz[i].split(splitKey)[1].split(splitKey2)[0]);
-                    parsedQuestion++;
-                } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == Integer.toString(choicesNum).charAt(0)) {
-                    String splitKey = Integer.toString(choicesNum) + ".";
-                    questions.set(questions.size() - 1, questions.get(questions.size() - 1) + '\n' + createdQuiz[i]);
-                    choicesNum++;
-                    if (choicesNum == 6) {
-                        choicesNum = 1;
+                } else if (parsedQuestion >= 4 && parsedQuestion < 6) {
+                    if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'Q') {
+                        if (createdQuiz[i].charAt(0) == '.') {
+                            String splitKey = "Q.";
+                            questions.add(createdQuiz[i].split(splitKey)[1]);
+                        } else {
+                            String splitKey = "Q" + createdQuiz[i].charAt(1) + ".";
+                            questions.add(createdQuiz[i].split(splitKey)[1]);
+                        }
+                    } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'A') {
+                        String splitKey;
+                        if (createdQuiz[i].charAt(1) == '.') {
+                            splitKey = "A.";
+                        } else {
+                            splitKey = "A" + createdQuiz[i].charAt(1) + ".";
+                        }
+                        answers.add(createdQuiz[i].split(splitKey)[1]);
+                        parsedQuestion++;
                     }
-                }
-            } else if (parsedQuestion >= 2 && parsedQuestion < 4) {
-                if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'Q') {
-                    if (createdQuiz[i].charAt(0) == '.') {
-                        String splitKey = "Q.";
-                        questions.add(createdQuiz[i].split(splitKey)[1]);
-                    } else {
-                        String splitKey = "Q" + createdQuiz[i].charAt(1) + ".";
-                        questions.add(createdQuiz[i].split(splitKey)[1]);
-                    }
-                } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'A') {
-                    answers.add("");
-                    parsedQuestion++;
-                }
-            } else if (parsedQuestion >= 4 && parsedQuestion < 6) {
-                if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'Q') {
-                    if (createdQuiz[i].charAt(0) == '.') {
-                        String splitKey = "Q.";
-                        questions.add(createdQuiz[i].split(splitKey)[1]);
-                    } else {
-                        String splitKey = "Q" + createdQuiz[i].charAt(1) + ".";
-                        questions.add(createdQuiz[i].split(splitKey)[1]);
-                    }
-                } else if (!createdQuiz[i].isEmpty() && createdQuiz[i].charAt(0) == 'A') {
-                    String splitKey;
-                    if (createdQuiz[i].charAt(1) == '.') {
-                        splitKey = "A.";
-                    } else {
-                        splitKey = "A" + createdQuiz[i].charAt(1) + ".";
-                    }
-                    answers.add(createdQuiz[i].split(splitKey)[1]);
-                    parsedQuestion++;
                 }
             }
+
+            for (int i = 0; i < questions.size(); i++) {
+                System.out.println(i + ":" + questions.get(i));
+            }
+
+            for (int i = 0; i < answers.size(); i++) {
+                System.out.println(i + ":" + answers.get(i));
+            }
+
+            List<quizInfo> result = new ArrayList<>();
+
+            for(int i=0; i< questions.size(); i++) {
+                Quiz quiz = new Quiz();
+                quiz.setQuizQuestion(questions.get(i));
+                quiz.setQuizAnswer(answers.get(i));
+                quizRepository.save(quiz);
+            }
+
+            return questions;
         }
 
-        for (int i = 0; i < questions.size(); i++){
-            System.out.println(i + ":" + questions.get(i));
+        private Quiz saveQuiz(QuizDto quizDto) {
+            Quiz quiz = quizDto.toEntity();
+            quizRepository.save(quiz);
+
+            return quiz;
         }
 
-        for (int i = 0; i < answers.size(); i++){
-            System.out.println(i + ":" + answers.get(i));
+
+        @Override
+        public String getAnswer(Integer quiz_id) {
+            Quiz quiz = quizRepository.findByQuizId(quiz_id);
+            return quiz.getQuizAnswer();
         }
 
-
-        return true;
+        @AllArgsConstructor
+        @Getter
+        @Setter
+        static class Body {
+            String model;
+            List<Message> messages;
+        }
     }
-
-    @Override
-    public Page getAnswer(Page page) {
-        return null;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    static class Body {
-        String model;
-        List<Message> messages;
-    }
-}

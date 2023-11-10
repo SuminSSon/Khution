@@ -19,11 +19,11 @@ public class QuizDto {
     // Dto -> Entity
     public Quiz toEntity() {
         Quiz quiz = Quiz.builder()
-                .quiz_id(this.quiz_id)
-                .page_id(this.page_id)
-                .quiz_question(this.quiz_question)
-                .quiz_bool(this.quiz_bool)
-                .quiz_answer(this.quiz_answer)
+                .quizId(this.quiz_id)
+                .quizPageId(page_id)
+                .quizQuestion(this.quiz_question)
+                .quizBool(this.quiz_bool)
+                .quizAnswer(this.quiz_answer)
                 .build();
 
         return quiz;

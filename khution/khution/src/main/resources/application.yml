@@ -1,5 +1,5 @@
 chatGpt:
-  key: 
+  key: ${key}
 
 spring:
   datasource:

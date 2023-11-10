@@ -10,17 +10,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PageDto {
-    private String user_id;
+    private Integer page_id;
+    private User user_id;
     private String page_contents;
     private String page_title;
     private Integer page_depth;
     private Integer page_parent;
 
     // Dto -> Entity
-    public Page toEntity(User user) {
+    public Page toEntity() {
         Page page = Page.builder()
+                .pageId(page_id)
                 .pageTitle(this.page_title)
-                .userId(user)
+                .userId(user_id)
                 .pageContents(this.page_contents)
                 .pageDepth(this.page_depth)
                 .pageParent(this.page_parent)
@@ -31,7 +33,7 @@ public class PageDto {
 
     // Entity -> Dto
     @Builder
-    public PageDto(String user_id, String page_contents, String page_title, Integer page_depth, Integer page_parent) {
+    public PageDto(User user_id, String page_contents, String page_title, Integer page_depth, Integer page_parent) {
         this.user_id = user_id;
         this.page_contents = page_contents;
         this.page_title = page_title;
