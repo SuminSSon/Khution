@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import './sidebar.css';
 import { MyContext } from '../../MyContextProvider'; // MyContext를 import
 import { Link } from 'react-router-dom';
-import fileimage from '../../assets/Document.png';
+import logo from '../../assets/khution.png';
 
 const Sidebar = () => {
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
@@ -31,7 +31,9 @@ const Sidebar = () => {
       <div className="sidebarWrapper">
         <div className="sideMenu">
 
-          <div className='smallsidebar'> 
+          <div className='smallsidebar'>
+
+            {/* <img className='logoimage' src={logo} />  */}
         
           <h3 className="sidebarTitle">
             사용자 이름

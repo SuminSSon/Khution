@@ -60,7 +60,7 @@ function Notepage() {
 
             <div>
               <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
-              <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button>
+              {/* <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button> */}
             </div>
 
             {sidebarFiles.map((file, index) => (
@@ -83,7 +83,7 @@ function Notepage() {
         </div>
 
         <div className="button-container">
-          {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>}
+          {/* {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>} */}
           {/* <Link to={`/Quiz`}>
             <button className='quizgenerate-button' onClick={createQuiz}>퀴즈 생성</button>
           </Link> */}

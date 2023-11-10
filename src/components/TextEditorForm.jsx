@@ -55,10 +55,10 @@ const TextEditorForm = () => {
           }}
         />
       </Container>
-      {/* <RowBox>
+      <RowBox>
         <Viewer dangerouslySetInnerHTML={{ __html: htmlString }} />
         <Viewer>{htmlString}</Viewer>
-      </RowBox> */}
+      </RowBox>
     </>
   );
 };

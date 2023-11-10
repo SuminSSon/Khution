@@ -15,12 +15,22 @@ function DynamicPage() {
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [pageTitle, setPageTitle] = useState(fileName);
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
+  const [quizfile, setquizfile] = useState([]);
 
 
 
 
   const createQuiz = () => {
     // 퀴즈 생성 로직을 추가하세요.
+    const newQuizFile = {
+      title: pageTitle + "-QUIZ",
+      memos: [],
+    };
+
+    // setFiles([...files, newQuizFile]);
+    setquizfile([...quizfile, newQuizFile])
+    
+    console.log('파일이 생성되었습니다.');
   };
 
   const handlePageTitleChange = (e) => {
@@ -65,8 +75,18 @@ function DynamicPage() {
 
             <div>
             <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
-            <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button>
+            {/* <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button> */}
             </div>
+            {quizfile.map((file, index) => (
+              <div key={index} className='file-wrapper'>
+                <img className='fileimage' src={fileimage} alt='File Icon' />
+                <Link to={`/${pageTitle}/Quiz`}>
+                  <span className='filename'>
+                    <span className='filename-text'>{file.title}</span>
+                  </span>
+                </Link>
+              </div>
+            ))}
             {files.map((file, index) => (
               <div key={index} className='file-wrapper'>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
@@ -85,10 +105,10 @@ function DynamicPage() {
           </div>
         </div>
         <div className="button-container">
-          {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>}
-          <Link to={`/${pageTitle}/Quiz`}>
+          {/* {showSaveButton && <button className='notesave-button' onClick={hideEditorForm}>내용 저장</button>} */}
+          {/* <Link to={`/${pageTitle}/Quiz`}> */}
           <button className='quizgenerate-button' onClick={createQuiz}>퀴즈 생성</button>
-          </Link>  
+          {/* </Link>   */}
         </div>
       </div>
     </div>
