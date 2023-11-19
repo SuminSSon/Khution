@@ -27,6 +27,15 @@ public class PageServiceImpl implements PageService{
 
     @Override
     public Page createPage(PageDto pageDto) {
+        Page parentP = pageRepository.findByPageId(pageDto.getPage_parent());
+        String parentTitle;
+        if (parentP == null) {
+            parentTitle = "";
+        } else {
+            parentTitle = parentP.getPageTitle() + "/";
+        }
+        pageDto.setPage_title(parentTitle + pageDto.getPage_title());
+
         Page page = pageDto.toEntity();
 
         return pageRepository.save(page);

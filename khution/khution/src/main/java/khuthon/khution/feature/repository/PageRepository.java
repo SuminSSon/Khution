@@ -13,4 +13,7 @@ public interface PageRepository extends JpaRepository<Page, Integer> {
 
     @Query
     List<Page> findByUserId(User userId);
+
+    @Query
+    Page findByPageId(Integer pageId);
 }

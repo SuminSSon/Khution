@@ -24,6 +24,7 @@ public class UserController {
     // 1. 회원가입
     @PostMapping("/join")
     public ResponseEntity<Boolean> join(@RequestBody UserDto userDto) {
+        System.out.println("요청");
         boolean joined = userService.join(userDto);
         if (joined) {
             return ResponseEntity.ok(true); // 200 OK

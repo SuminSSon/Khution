@@ -4,6 +4,7 @@ package khuthon.khution.webapi;
 import khuthon.khution.feature.dto.PageDto;
 import khuthon.khution.feature.model.Page;
 import khuthon.khution.feature.model.User;
+import khuthon.khution.feature.repository.UserRepository;
 import khuthon.khution.feature.service.Page.PageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,13 @@ public class PageController {
 
     @Autowired
     private final PageService pageService;
+    @Autowired
+    private final UserRepository userRepository;
 
     @GetMapping("/userPages")
-    public List<Page> getPagesCreatedByUser(@RequestBody User userId) {
-        return pageService.getPagesCreatedByUser(userId);
+    public List<Page> getPagesCreatedByUser(@RequestParam String userId) {
+        User user = userRepository.findByUser_id(userId);
+        return pageService.getPagesCreatedByUser(user);
     }
 
     // 1. 페이지 생성
