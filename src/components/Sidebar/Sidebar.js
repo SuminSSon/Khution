@@ -8,6 +8,7 @@ const Sidebar = () => {
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
   const [newFileName, setNewFileName] = useState('');
   const [expanded, setExpanded] = useState(false); // 사이드바의 초기 확장 상태
+  const user_id = localStorage.getItem('user_id');
 
   const handleAddFile = () => {
     const fileName = prompt('파일 이름을 입력하세요:');
@@ -74,7 +75,7 @@ const Sidebar = () => {
             {/* <img className='logoimage' src={logo} />  */}
         
           <h3 className="sidebarTitle">
-            사용자 이름
+            test123
             </h3>
             <button onClick={handleToggleSidebar} className="toggleButton">
               {expanded ? '<' : '>'} </button>

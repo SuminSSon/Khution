@@ -65,10 +65,10 @@ function Notepage() {
 
         const response = await axios.post('http://localhost:8080/page/create', {
           page_title: title,
-          user_id,
+          user_id: user_id,
           page_contents: '',
           page_depth: '1',
-          page_parent,
+          page_parent: page_parent,
         });
 
         if (response.status === 200) {
