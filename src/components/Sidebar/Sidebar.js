@@ -1,62 +1,65 @@
 import React, { useContext, useState } from 'react';
 import './sidebar.css';
 import { MyContext } from '../../MyContextProvider'; // MyContext를 import
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../../assets/khution.png';
 
 const Sidebar = () => {
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
   const [newFileName, setNewFileName] = useState('');
-  const [expanded, setExpanded] = useState(false); // 사이드바의 초기 확장 상태
+  const { currentPageId, setCurrentPageId } = useContext(MyContext);
+  const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate(); // 사이드바의 초기 확장 상태
+  const user_id = localStorage.getItem('user_id');
 
-  const handleAddFile = () => {
-    const fileName = prompt('파일 이름을 입력하세요:');
+  const createFileWithPrompt = async () => {
+    const title = prompt('페이지 제목을 입력하세요:');
+    if (title) {
+      try {
+        // localStorage에서 user_id 가져오기
+        const user_id = localStorage.getItem('user_id');
+        const page_parent = '0';
 
-    if (fileName && fileName.trim() !== '') {
-      const newFile = {
-        title: fileName,
-        memos: [],
-      };
+        const response = await axios.post('http://localhost:8080/page/create', {
+          page_title: title,
+          user_id,
+          page_contents: '',
+          page_depth: '1',
+          page_parent,
+        });
 
-      setSidebarFiles([...sidebarFiles, newFile]);
+        if (response.status === 200) {
+          console.log("생성res", response);
+          console.log("생성됨");
+
+          const newFile = {
+            id: response.data.pageId,
+            title: response.data.pageTitle,
+            content: response.data.pageContents,
+            depth: response.data.pageDepth,
+            parent: response.data.pageParent,
+          };
+
+          console.log(newFile);
+
+          setSidebarFiles([...sidebarFiles, newFile]);
+          
+          console.log('파일이 생성되었습니다.');
+        } else {
+          console.error('페이지 생성 실패. 상태:', response.status);
+        }
+      } catch (error) {
+        console.error('페이지 생성 중 오류 발생:', error);
+      }
     }
   };
 
-  // 이 코드 수정해서 연동시 사용
-  // const createFileWithPrompt = async () => {
-  //   const title = prompt('페이지 제목을 입력하세요:');
-  //   if (title) {
-  //     try {
-  //       const user_id = 'abc123'; // 실제 사용자 ID로 교체
-  //       const page_parent = '0';
-
-  //       const response = await axios.post('/create', {
-  //         user_id,
-  //         page_title: title,
-  //         page_parent,
-  //       });
-
-  //       // 응답이 OK일 때 아래 로직 실행
-  //       if (response.status === 200) {
-  //         // 페이지 정보를 가지고 새로운 파일 생성
-  //         const newFile = {
-  //           title: response.data.pageTitle,
-  //           memos: [], // 메모 정보가 있으면 추가
-  //           depth: response.data.pageDepth,
-  //           parent: response.data.pageParent,
-  //         };
-
-  //         setSidebarFiles([...sidebarFiles, newFile]);
-  //         setPageTitle(response.data.pageTitle);
-  //         console.log('파일이 생성되었습니다.');
-  //       } else {
-  //         console.error('페이지 생성 실패. 상태:', response.status);
-  //       }
-  //     } catch (error) {
-  //       console.error('페이지 생성 중 오류 발생:', error);
-  //     }
-  //   }
-  // };
+  const handleClickFile = (file) => {
+    console.log(file.id);
+    setCurrentPageId(file.id);
+    navigate(`/Main/${file.title}`, { state: { pageId: file.id } });
+  };
 
 
 
@@ -74,25 +77,24 @@ const Sidebar = () => {
             {/* <img className='logoimage' src={logo} />  */}
         
           <h3 className="sidebarTitle">
-            사용자 이름
+            {user_id}
             </h3>
             <button onClick={handleToggleSidebar} className="toggleButton">
               {expanded ? '<' : '>'} </button>
 
             </div>
 
-          <button onClick={handleAddFile} className="addFileButton">+ 페이지 추가</button>
+          <button onClick={createFileWithPrompt} className="addFileButton">+ 페이지 추가</button>
           {expanded && (
             <ul className="sidebarPagelist">
               {sidebarFiles.map((file, index) => (
-                <div key={index} className='file-wrapper2'>
-                  <Link to={`/${file.title}`}>
-                    <span className='filename2'>
-                      <span className='filename-text2'>{file.title}</span>
-                    </span>
-                  </Link>
-                </div>
-              ))}
+              <div key={index} className='file-wrapper2' onClick={() => handleClickFile(file)}>
+      
+                <span className='filename2'>
+                  <span className='filename-text2'>{file.title}</span>
+                </span>
+              </div>
+            ))}
             </ul>
           )}
         </div>

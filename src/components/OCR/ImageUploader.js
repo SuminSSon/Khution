@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
+import "./upload.css"
 import axios from 'axios';
 import Modal2 from '../Modal2/Modal2';
 
@@ -40,7 +41,7 @@ const ImageUploader = () => {
 
     return (
         <div>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
+            <input className='image-button' type="file" accept="image/*" onChange={handleImageUpload} />
             <Modal2 isOpen={isModalOpen} onClose={() => setModalOpen(false)} content={fullCode} />
         </div>
     );

@@ -17,6 +17,9 @@ function Notepage() {
   const { currentPageId, setCurrentPageId } = useContext(MyContext);
   const [pageTitle, setPageTitle] = useState('');
   const { sidebarFiles, setSidebarFiles } = useContext(MyContext);
+  const {currentPageContent, setCurrentPageContent} = useContext(MyContext);
+
+  const filteredSidebarFiles = sidebarFiles.filter(file => file.parent === 0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,9 +36,13 @@ function Notepage() {
 
         console.log(response);
 
-        const newFiles = response.data.map(page => ({
+        const filterFiles = response.data.filter(page => !page.pageTitle.includes("Quiz") && !page.pageTitle.includes("QUIZ") );
+        
+
+        const newFiles = filterFiles.map(page => ({
           id: page.pageId,
-          title: page.pageTitle,
+          content: page.pageContents,
+          title: page.pageTitle.split('/').pop(),
           depth: page.pageDepth,
           parent: page.pageParent,
         }));
@@ -101,6 +108,7 @@ function Notepage() {
     console.log(file.id);
     setCurrentPage(file.id);
     setCurrentPageId(file.id);
+    setCurrentPageContent(file.content);
     navigate(`/Main/${file.title}`, { state: { pageId: file.id } });
   };
 
@@ -121,7 +129,7 @@ function Notepage() {
               <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
             </div>
 
-            {sidebarFiles.map((file, index) => (
+            {filteredSidebarFiles.map((file, index) => (
               <div key={index} className='file-wrapper' onClick={() => handleClickFile(file)}>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
                 <span className='filename'>

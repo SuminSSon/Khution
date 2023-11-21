@@ -16,9 +16,9 @@
 .quiz-question {
   position: relative;
   font-weight:bolder;
-  color: #0074e4;
+  color: #3f3f3f;
   font-size: 19px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 10px;
 }
 
@@ -56,4 +56,12 @@
 
 .user-answer {
   font-size: small;
+}
+
+input[type="radio"] {
+  font-size: 14px; 
+}
+
+label {
+  font-size: 14px; 
 }

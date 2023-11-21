@@ -24,25 +24,76 @@ function DynamicPage() {
   const [quizfile, setquizfile] = useState([]);
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
-  const {currentPageId, setCurentPageId} = useContext(MyContext);
+  const {currentPageId, setCurrentPageId} = useContext(MyContext);
   const {currentPageContent, setCurrentPageContent} = useContext(MyContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserPages = async () => {
+      try {
+        // localStorage에서 user_id 가져오기
+        const user_id = localStorage.getItem('user_id');
+  
+        const response = await axios.get('http://localhost:8080/page/userPages', {
+          params: {
+            userId: user_id,
+          }
+        });
+  
+        console.log(response);
+  
+        // Filter pages based on conditions (depth: 2, parent: currentPageId)
+        const filteredPages = response.data.filter(page => page.pageDepth === 2 && page.pageParent === currentPageId && !page.pageTitle.includes("QUIZ"));
+  
+        // Filter pages with "QUIZ" in the title
+        const quizFiles = response.data.filter(page => page.pageDepth === 2 && page.pageParent === currentPageId && page.pageTitle.includes("QUIZ"));
+  
+        const newFiles = filteredPages.map(page => ({
+          id: page.pageId,
+          link: page.pageTitle,
+          title: page.pageTitle.split('/').pop(),
+          depth: page.pageDepth,
+          parent: page.pageParent,
+        }));
+  
+        // Split pageTitle by '/' and take the last string
+        const newQuizFiles = quizFiles.map(page => ({
+          id: page.pageId,
+          link: page.pageTitle,
+          title: page.pageTitle.split('/').pop(), // Take the last string after splitting by '/'
+          depth: page.pageDepth,
+          parent: page.pageParent,
+        }));
+  
+        console.log(newFiles);
+        console.log(newQuizFiles);
+  
+        setFiles(newFiles);
+        setquizfile(newQuizFiles);
+      } catch (error) {
+        console.error('Error fetching user pages:', error);
+      }
+    };
+  
+    fetchUserPages();
+  }, [currentPageId]);
 
 
 
 
   const createQuiz = async () => {
+    setquizlist([])
     console.log(currentPageId);
     setQuizModalOpen(true);
   
     // 퀴즈 생성 로직을 추가하세요.
-    const newQuizFile = {
-      title: pageTitle + "-QUIZ",
-      memos: [],
-    };
+    // const newQuizFile = {
+    //   title: pageTitle + "-QUIZ",
+    //   memos: [],
+    // };
   
-    // setFiles([...files, newQuizFile]);
-    setquizfile([...quizfile, newQuizFile]);
+    // // setFiles([...files, newQuizFile]);
+    // setquizfile([...quizfile, newQuizFile]);
   
     // API에 퀴즈 생성 요청을 보냅니다.
     await axios.get(`http://localhost:8080/quiz/create`, {
@@ -71,18 +122,47 @@ function DynamicPage() {
     setPageTitle(e.target.value);
   };
 
-  const createFileWithPrompt = () => {
-    console.log("id", currentPageId);
-    const title = prompt('파일 제목을 입력하세요:');
+  const createFileWithPrompt = async () => {
+    const title = prompt('페이지 제목을 입력하세요:');
     if (title) {
-      const newFile = {
-        title,
-        memos: [],
-      };
+      try {
+        // localStorage에서 user_id 가져오기
+        const user_id = localStorage.getItem('user_id');
+        const page_parent = currentPageId;
 
-      setFiles([...files, newFile]);
-      setFileTitle(title);
-      console.log('파일이 생성되었습니다.');
+        const response = await axios.post('http://localhost:8080/page/create', {
+          page_title: title,
+          user_id,
+          page_contents: '',
+          page_depth: '2',
+          page_parent,
+        });
+
+        if (response.status === 200) {
+          console.log("생성res", response);
+          console.log("생성됨");
+
+          const newFile = {
+            id: response.data.pageId,
+            link: response.data.pageTitle,
+            title: response.data.pageTitle.split('/').pop(),
+            content: response.data.pageContents,
+            depth: response.data.pageDepth,
+            parent: response.data.pageParent,
+          };
+
+          console.log(newFile);
+
+          setFiles([...files, newFile]);
+          setSidebarFiles([...sidebarFiles, newFile]);
+          setPageTitle(response.data.page_title);
+          console.log('파일이 생성되었습니다.');
+        } else {
+          console.error('페이지 생성 실패. 상태:', response.status);
+        }
+      } catch (error) {
+        console.error('페이지 생성 중 오류 발생:', error);
+      }
     }
   };
 
@@ -94,6 +174,14 @@ function DynamicPage() {
   const hideEditorForm = () => {
     setShowEditor(false);
     setShowSaveButton(false);
+  };
+
+  const handleClickFile = (file) => {
+    console.log(file.id);
+    setCurrentPage(file.id);
+    setCurrentPageId(file.id);
+    setCurrentPageContent(file.content);
+    navigate(`/Main/${file.link}`, { state: { pageId: file.id } });
   };
 
   return (
@@ -112,7 +200,7 @@ function DynamicPage() {
               <button onClick={createFileWithPrompt} className="create-file-button">+ 페이지 생성하기</button>
               {/* <button className='editcontent-button' onClick={showEditorForm}>내용 수정</button> */}
             </div>
-            {quizfile.map((file, index) => (
+            {/* {quizfile.map((file, index) => (
               <div key={index} className='file-wrapper'>
                 <img className='fileimage' src={fileimage} alt='File Icon' />
                 <Link to={`/Main/${pageTitle}/Quiz`}>
@@ -121,17 +209,17 @@ function DynamicPage() {
                   </span>
                 </Link>
               </div>
-            ))}
+            ))} */}
+            
             {files.map((file, index) => (
-              <div key={index} className='file-wrapper'>
-                <img className='fileimage' src={fileimage} alt='File Icon' />
-                <Link to={`/Main/${pageTitle}/${file.title}`}>
+              <div key={index} className='file-wrapper' onClick={() => handleClickFile(file)} >
+                <img className='fileimage' src={fileimage} alt='File Icon' />   
                   <span className='filename'>
                     <span className='filename-text'>{file.title}</span>
                   </span>
-                </Link>
               </div>
             ))}
+
             <div className='file-line'> </div>
             <Topbar onEditContent={showEditorForm} showSaveButton={showSaveButton} onHideEditor={hideEditorForm} />
 

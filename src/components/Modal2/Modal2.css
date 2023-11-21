@@ -1,3 +1,5 @@
+
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -24,4 +26,27 @@
     font-size: 20px;
     cursor: pointer;
   }
+
+  .modal2-title{
+    font-weight: bold;
+    font-size: medium;
+    margin-bottom: 20PX;
+  }
+
+  .spell-button {
+    /* 여기에 원하는 스타일을 추가하세요 */
+    margin-top: 20px;
+    background-color: #0074e4; /* 예시로 초록색 배경을 추가했습니다 */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
   
+  .modal2-content{
+    background-color: #f6f6f6;
+    padding: 15px;
+    border-radius: 10px;
+    
+  }

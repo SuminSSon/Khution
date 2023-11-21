@@ -42,19 +42,6 @@
 
   }
 
-  .quizgenerate-button {
-    margin-left: 350px;
-    margin-bottom: 40px;
-    position: relative;
-    background-color: #0074e4; /* 파란색 배경 버튼 */
-    border-radius: 20px;
-    font-weight: bold;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-
-  }
 
 
   .textarea-container {
@@ -114,6 +101,11 @@
   font-weight: bold;
   margin-top: -25px; /* 파일 이름을 위로 올리기 위한 설정 */
   text-decoration: underline; /* 밑줄 추가 */
+}
+
+.quizgenerate-button{
+  margin-left: 110px;
+  margin-bottom: 20px;
 }
   
 

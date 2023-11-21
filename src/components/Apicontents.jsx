@@ -30,7 +30,7 @@ function Apicontents() {
   
     // Call the fetchData function when the component mounts
     fetchData();
-  }, [currentPageId]); // useEffect dependency: currentPageId
+  }, [currentPageId, currentPageContent]); // useEffect dependency: currentPageId
 
   return (
     <div className="api-contents-container">
